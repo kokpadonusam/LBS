@@ -11,7 +11,18 @@
 <body>
   <div id="app">
     <h1>Lesson Booking System</h1>
+    
     <div class="lesson-list">
+      <!-- looping out list of lessons using vue directive: v-for -->
+      <div class="lesson" v-for="lesson in lessons" :key="lesson.subject">
+        <i :class="lesson.icon"></i>
+        <div>
+          <h2>{{ lesson.subject }}</h2>
+          <p>Location: {{ lesson.location }}</p>
+          <p>Price: ${{ lesson.price }}</p>
+          <p>Spaces: {{ lesson.spaces }}</p>
+        </div>
+      </div>
     </div>
   </div>
   
