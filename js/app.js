@@ -12,9 +12,38 @@ new Vue({
       { subject: "Chemistry", location: "Lab 3", price: 125, spaces: 5, icon: "fas fa-vials" },
       { subject: "Geography", location: "Room 104", price: 85, spaces: 5, icon: "fas fa-globe" },
       { subject: "Physical Education", location: "Gym", price: 75, spaces: 5, icon: "fas fa-dumbbell" }
-    ]
+    ],
+    sortAttribute: 'subject',  // default sort attribute
+    sortOrder: 'asc', // default order
+  },
+  computed: {
+    sortedLessons() {
+      // copy lessons array to preserve default order
+      let sortedArray = [...this.lessons];
+
+      // sort array based on the selected attribute and order
+      sortedArray.sort((a, b) => {
+        let valueA = a[this.sortAttribute];
+        let valueB = b[this.sortAttribute];
+        
+        if (typeof valueA === 'string') {
+          valueA = valueA.toLowerCase();
+          valueB = valueB.toLowerCase();
+        }
+
+        if (this.sortOrder === 'asc') {
+          return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+        } else {
+          return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+        }
+      });
+
+      return sortedArray;
+    }
   },
   methods: {
-    
+    toggleSortOrder() {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    }
   }
 });
