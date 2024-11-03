@@ -41,6 +41,12 @@
           <p>Location: {{ lesson.location }}</p>
           <p>Price: ${{ lesson.price }}</p>
           <p>Spaces: {{ lesson.spaces }}</p>
+
+          <button 
+            @click="addToCart(lesson)" 
+            :disabled="lesson.spaces === 0">
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>

@@ -13,6 +13,7 @@ new Vue({
       { subject: "Geography", location: "Room 104", price: 85, spaces: 5, icon: "fas fa-globe" },
       { subject: "Physical Education", location: "Gym", price: 75, spaces: 5, icon: "fas fa-dumbbell" }
     ],
+    cart: [],
     sortAttribute: 'subject',  // default sort attribute
     sortOrder: 'asc', // default order
   },
@@ -44,6 +45,22 @@ new Vue({
   methods: {
     toggleSortOrder() {
       this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-    }
+    },
+    addToCart(lesson) {
+      // check if lesson has enough space and return if not
+      if (lesson.spaces > 0) {
+        // reduce space by 1
+        lesson.spaces -= 1;
+
+        const existingItem = this.cart.find(item => item.subject === lesson.subject);
+
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          // add new lesson entry to the cart with quantity set to 1
+          this.cart.push({ ...lesson, quantity: 1 });
+        }
+      }
+    },
   }
 });
