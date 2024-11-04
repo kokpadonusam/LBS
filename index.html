@@ -36,10 +36,20 @@
         </button>
       </div>
     </div>
+
+    <div class="controls">
+      <input 
+        type="text" 
+        v-model="searchQuery" 
+        placeholder="Search lessons..." 
+        class="search-bar"
+      />
+    </div>
+    
     
     <div class="lesson-list" :class="{ active: !showCart }">
       <!-- looping out list of lessons using vue directive: v-for -->
-      <div class="lesson" v-for="lesson in sortedLessons" :key="lesson.subject">
+      <div class="lesson" v-for="lesson in displayedLessons" :key="lesson.subject">
         <i :class="lesson.icon"></i>
         <div>
           <h2>{{ lesson.subject }}</h2>

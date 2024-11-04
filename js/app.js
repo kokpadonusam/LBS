@@ -21,13 +21,25 @@ new Vue({
     checkoutAddress: '',
     sortAttribute: 'subject',  // default sort attribute
     sortOrder: 'asc', // default order
+    searchQuery: '',
   },
   computed: {
+    filteredLessons() {
+      const query = this.searchQuery.toLowerCase(); // convert query to lowercase
+      return this.lessons.filter(lesson => {
+        return (
+          lesson.subject.toLowerCase().includes(query) || // search by subject
+          lesson.location.toLowerCase().includes(query) || // search by location
+          lesson.price.toString().includes(query) || // search by price
+          lesson.spaces.toString().includes(query) // search by available spaces
+        );
+      });
+    },
     sortedLessons() {
       // copy lessons array to preserve default order
-      let sortedArray = [...this.lessons];
+      let sortedArray = [...this.filteredLessons];  // filteredLessons from searchquery here
 
-      // sort array based on the selected attribute and order
+      // Sort based on the selected attribute and order
       sortedArray.sort((a, b) => {
         let valueA = a[this.sortAttribute];
         let valueB = b[this.sortAttribute];
@@ -46,13 +58,16 @@ new Vue({
 
       return sortedArray;
     },
+    displayedLessons() {
+      return this.sortedLessons;  // using sortedLessons for final lesson display
+    },
     isCheckoutEnabled() {
       const nameValid = /^[a-zA-Z]+$/.test(this.checkoutName);
       const phoneValid = /^[0-9]+$/.test(this.checkoutPhone);
       const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.checkoutEmail);
       const addressValid = this.checkoutAddress.trim().length > 0;
       return nameValid && phoneValid && emailValid && addressValid;
-    }
+    },
   },
   methods: {
     toggleSortOrder() {
