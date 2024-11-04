@@ -14,6 +14,11 @@ new Vue({
       { subject: "Physical Education", location: "Gym", price: 75, spaces: 5, icon: "fas fa-dumbbell" }
     ],
     cart: [],
+    showCart: false,
+    checkoutName: '',
+    checkoutPhone: '',
+    checkoutEmail: '',
+    checkoutAddress: '',
     sortAttribute: 'subject',  // default sort attribute
     sortOrder: 'asc', // default order
   },
@@ -40,6 +45,13 @@ new Vue({
       });
 
       return sortedArray;
+    },
+    isCheckoutEnabled() {
+      const nameValid = /^[a-zA-Z]+$/.test(this.checkoutName);
+      const phoneValid = /^[0-9]+$/.test(this.checkoutPhone);
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.checkoutEmail);
+      const addressValid = this.checkoutAddress.trim().length > 0;
+      return nameValid && phoneValid && emailValid && addressValid;
     }
   },
   methods: {
@@ -49,18 +61,49 @@ new Vue({
     addToCart(lesson) {
       // check if lesson has enough space and return if not
       if (lesson.spaces > 0) {
-        // reduce space by 1
-        lesson.spaces -= 1;
-
-        const existingItem = this.cart.find(item => item.subject === lesson.subject);
-
-        if (existingItem) {
-          existingItem.quantity += 1;
+        // check if the lesson is already in the cart
+        const cartItem = this.cart.find(item => item.subject === lesson.subject);
+        if (cartItem) {
+          cartItem.quantity += 1; // increase quantity
         } else {
-          // add new lesson entry to the cart with quantity set to 1
-          this.cart.push({ ...lesson, quantity: 1 });
+          this.cart.push({ subject: lesson.subject, quantity: 1 });
         }
+        lesson.spaces -= 1; // decrease available spaces in lessons
       }
     },
+    toggleCart() {
+      this.showCart = !this.showCart;
+    },
+    removeFromCart(cartItem) {
+      const lesson = this.lessons.find(l => l.subject === cartItem.subject);
+      if (cartItem.quantity > 1) {
+        cartItem.quantity -= 1; // reduce quantity in the cart
+      } else {
+        this.cart = this.cart.filter(item => item.subject !== cartItem.subject); // Remove item from cart if quantity is 1
+      }
+      lesson.spaces += 1; // increase available spaces in lessons
+    },
+    validateName() {
+      this.checkoutName = this.checkoutName.replace(/[^a-zA-Z]/g, '');
+    },
+    validatePhone() {
+      this.checkoutPhone = this.checkoutPhone.replace(/[^0-9]/g, '');
+    },
+    validateEmail() {
+      this.checkoutEmail = this.checkoutEmail.replace(/[^a-zA-Z0-9@._-]/g, '');
+    },
+    checkout() {
+      alert(`Order for ${this.checkoutName} has been submitted.`);
+      this.cart.forEach(cartItem => {
+        const lesson = this.lessons.find(l => l.subject === cartItem.subject);
+        lesson.spaces += cartItem.quantity; // restore spaces from cart quantity
+      });
+      this.cart = [];
+      this.checkoutName = '';
+      this.checkoutPhone = '';
+      this.checkoutEmail = '';
+      this.checkoutAddress = '';
+      this.showCart = false;
+    }
   }
 });
