@@ -65,7 +65,7 @@
       </div>
       
         <!-- Checkout section -->
-      <div v-if="showCart" class="checkout-section active">
+      <div v-if="showCart && cart.length > 0" class="checkout-section active">
         <h2>Checkout</h2>
         <div class="checkout-input">
           <label>Name:</label>
